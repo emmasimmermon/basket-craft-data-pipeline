@@ -9,7 +9,7 @@
 # %%
 # Import necessary libraries
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text      # << add text here
 import os
 from dotenv import load_dotenv
 
@@ -19,10 +19,10 @@ load_dotenv()
 
 # %%
 # MySQL database connection details
-mysql_user     = os.environ['MYSQL_USER']
-mysql_password = os.environ['MYSQL_PASSWORD']
-mysql_host     = os.environ['MYSQL_HOST']
-mysql_db       = os.environ['MYSQL_DB']
+mysql_user     = os.environ.get('MYSQL_USER')
+mysql_password = os.environ.get('MYSQL_PASSWORD')
+mysql_host     = os.environ.get('MYSQL_HOST')
+mysql_db       = os.environ.get('MYSQL_DB')
 
 # Postgres database connection details
 pg_user     = os.environ['PG_USER']
@@ -40,6 +40,15 @@ pg_conn_str    = f'postgresql+psycopg2://{pg_user}:{pg_password}@{pg_host}/{pg_d
 mysql_engine = create_engine(mysql_conn_str)
 pg_engine    = create_engine(pg_conn_str)
 
+print("Database engines created successfully.")
+
+# %%
+# --- NEW BLOCK: ensure raw schema exists ---
+with pg_engine.begin() as conn:
+    conn.execute(text("CREATE SCHEMA IF NOT EXISTS raw;"))
+print("Schema 'raw' ensured in Postgres.")
+# --- END NEW BLOCK ---
+
 # %%
 # Read only December 2023 sessions from MySQL
 query = """
@@ -49,6 +58,7 @@ WHERE created_at >= '2023-12-01'
   AND created_at <  '2024-01-01'
 """
 df = pd.read_sql(query, mysql_engine)
+print(f"DataFrame loaded with shape: {df.shape}")
 
 # %%
 # Write DataFrame to website_sessions table in Postgres (raw schema)
@@ -59,7 +69,6 @@ df.to_sql(
     if_exists='replace',
     index=False
 )
-
 print(f'{len(df)} records loaded into raw.website_sessions.')
 
 # %%

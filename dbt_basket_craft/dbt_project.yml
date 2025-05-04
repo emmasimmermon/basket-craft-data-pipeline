@@ -1,0 +1,30 @@
+# dbt_project.yml
+name: 'dbt_basket_craft'
+version: '1.0.0'
+
+profile: 'dbt_basket_craft'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  dbt_basket_craft:
+    staging:
+      +schema: staging
+      +materialized: view
+
+    warehouse:
+      +schema: warehouse
+      +materialized: table
+
+    marts:
+      +schema: marts
+      +materialized: table
