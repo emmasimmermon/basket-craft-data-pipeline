@@ -3,5 +3,7 @@ As part of Lesson Exercise 10 and Quiz 3, I built an end-to-end data pipeline th
 
 Looker Studio Dashboard: https://lookerstudio.google.com/reporting/e90a79fd-75a5-499c-9cf5-168e258ee3a6
 
+Basket Craft Website Sessions Data Pipeline Chart: https://shorturl.at/Fo0QG
+
 
 
